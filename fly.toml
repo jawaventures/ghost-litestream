@@ -1,39 +1,38 @@
-# fly.toml file generated for ghost-blog on 2021-03-27T11:26:02-05:00
+# fly.toml app configuration file generated for jawa-blog on 2023-05-25T12:57:44-06:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-app = "ghost-blog"
-
+app = "jawa-blog"
+primary_region = "den"
 kill_signal = "SIGINT"
-kill_timeout = 5
-
-# [build]
-# image = "ghost:4.1.2"
+kill_timeout = "5s"
 
 [env]
-FLY_PRIMARY_REGION="ord"
+  FLY_PRIMARY_REGION = "ord"
 
-[mount]
-source = "ghost_content"
-destination = "/var/lib/ghost/content"
+[[mounts]]
+  source = "ghost_content"
+  destination = "/var/lib/ghost/content"
 
 [[services]]
-  internal_port = 2368
   protocol = "tcp"
+  internal_port = 2368
 
+  [[services.ports]]
+    port = 80
+    handlers = ["http"]
+    force_https = true
+
+  [[services.ports]]
+    port = 443
+    handlers = ["tls", "http"]
   [services.concurrency]
     hard_limit = 25
     soft_limit = 20
 
-  [[services.ports]]
-    handlers = ["http"]
-    port = "80"
-    force_https = true
-
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = "443"
-
   [[services.tcp_checks]]
-    grace_period = "15s"
     interval = "15s"
-    restart_limit = 6
     timeout = "2s"
+    grace_period = "15s"
+    restart_limit = 6
